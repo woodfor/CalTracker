@@ -210,11 +210,7 @@ public class Activity_signUp extends AppCompatActivity {
                    if (tmpCre.get("Status")==200)
                    {
                        result = "Welcome!!"+" "+ username.getText().toString();
-                       SharedPreferences spUser = getApplicationContext().getSharedPreferences("UserInfo",
-                               Context.MODE_PRIVATE);
-                       SharedPreferences.Editor eUser = spUser.edit();
-                       eUser.putInt("ID", tmp.get("ID"));
-                       eUser.apply();
+
                    }
                    else
                    {

@@ -3,7 +3,9 @@ package com.example.caltracker.ui.login;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -20,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caltracker.HomeActivity;
 import com.example.caltracker.R;
 import com.example.caltracker.Activity_signUp;
 import com.example.caltracker.TestActivity;
@@ -133,10 +136,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
+        EditText tmp = findViewById(R.id.username);
+        String welcome = getString(R.string.welcome) + " " + model.getDisplayName();
         User user = model.getUser();
         // TODO : initiate successful logged in experience
+        Intent intent = new Intent(LoginActivity.this,
+                HomeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("User",user);
+        String x = tmp.getText().toString();
+        bundle.putString("username",x);
+        intent.putExtras(bundle);
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+        startActivity(intent);
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
