@@ -3,6 +3,8 @@ package com.example.caltracker;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,6 +45,10 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setTitle("Navigation Drawer");
+        /*FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new
+                MainFragment()).commit();*/
         View headerView = navigationView.getHeaderView(0);
 
         Bundle bundle = getIntent().getExtras();
@@ -180,7 +186,7 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Fragment nextFragment = null;
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
@@ -193,8 +199,12 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_dailyDiet){
+            nextFragment = new DailyDietFragment();
         }
-
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().replace(R.id.content_frame,
+                nextFragment).commit();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

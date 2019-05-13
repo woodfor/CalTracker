@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -183,6 +184,43 @@ public class RestClient {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         Log.i("Json",textResult.trim());
         return  textResult.trim().equals("[]")? null : gson.fromJson(textResult,User.class);
+    }
+
+    public static Food[] FoodList(){
+        //initialise
+        URL url = null;
+        HttpURLConnection conn = null;
+        final String methodPath="food.food";
+        String textResult = " ";
+        //Making HTTP request
+        try {
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to GET
+            conn.setRequestMethod("GET");
+//add http headers to set your response type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+//Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+//read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+        }
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+        Log.i("Json",textResult.trim());
+        return  textResult.trim().equals("[]")? null : gson.fromJson(textResult,Food[].class);
     }
 }
 

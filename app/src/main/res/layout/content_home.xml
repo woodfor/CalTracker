@@ -66,4 +66,13 @@
         android:layout_height="wrap_content"
         android:text="Challenge Yourself !" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
 </LinearLayout>
