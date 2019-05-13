@@ -19,7 +19,7 @@ import java.util.Scanner;
 public class RestClient {
 
     private static final String BASE_URL =
-            "http://192.168.0.213:8080/Food/webresources/";
+            "http://118.138.127.72:8080/Food/webresources/";
 
     public static Boolean userExist(String username) {
         final String methodPath = "food.credential/userExist/"+username;

@@ -9,62 +9,7 @@
     tools:context=".HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="241dp"
-        tools:layout_editor_absoluteX="66dp"
-        tools:layout_editor_absoluteY="85dp"
-        tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
 
-    <TextView
-        android:id="@+id/textViewUserNameD"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textStyle="bold" />
-
-
-    <TextClock
-        android:id="@+id/textClock"
-        android:layout_width="match_parent"
-        android:layout_height="21dp"
-        android:textAlignment="center"
-        android:format12Hour="yyyy/MM/dd hh:mm:ss a" />
-    />
-    <EditText
-        android:id="@+id/editTextGoalStep"
-        android:layout_width="match_parent"
-        android:layout_height="121dp"
-        android:ems="10"
-        android:hint="Your Goal Step"
-        android:inputType="number"
-        android:visibility="gone"
-        android:textAlignment="center" />
-
-    <Button
-        android:id="@+id/buttonSetGoal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Let's go !" />
-
-    <TextView
-        android:id="@+id/textViewGoal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textSize="24sp" />
-
-    <Button
-        android:id="@+id/buttonAddGoal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Challenge Yourself !" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -72,7 +17,9 @@
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+
+            />
     </ScrollView>
 
 </LinearLayout>
