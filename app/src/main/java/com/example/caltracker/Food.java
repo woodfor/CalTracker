@@ -1,5 +1,7 @@
 package com.example.caltracker;
 
+import java.math.BigDecimal;
+
 public class Food {
     private Integer fid;
     private String name;
@@ -7,12 +9,19 @@ public class Food {
     private int calamount;
     private String servingunit;
     private String servingamount;
-    private int fat;
+    private BigDecimal fat;
 
-    public Food(Integer fid, String name, String category, int calamount, String servingunit, String servingamount, int fat) {
+    public Food(Integer fid, String name, String category, int calamount, String servingunit, String servingamount, BigDecimal fat) {
         this.fid = fid;
         this.name = name;
         this.category = category;
+        this.calamount = calamount;
+        this.servingunit = servingunit;
+        this.servingamount = servingamount;
+        this.fat = fat;
+    }
+    public Food( String name, int calamount, String servingunit, String servingamount, BigDecimal fat) {
+        this.name = name;
         this.calamount = calamount;
         this.servingunit = servingunit;
         this.servingamount = servingamount;
@@ -67,11 +76,11 @@ public class Food {
         this.servingamount = servingamount;
     }
 
-    public int getFat() {
+    public BigDecimal getFat() {
         return fat;
     }
 
-    public void setFat(int fat) {
+    public void setFat(BigDecimal fat) {
         this.fat = fat;
     }
 
