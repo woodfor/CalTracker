@@ -25,6 +25,10 @@
 
     </LinearLayout>
 
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"/>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,19 +38,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Food Name"
-            android:textAlignment="center" />
+            android:text="-Food Name-"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
     <ListView
         android:id="@+id/listView_food"
         android:layout_width="match_parent"
-        android:layout_height="111dp" />
+        android:layout_height="120dp" />
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp"/>
+
     <ImageView
         android:id="@+id/imageViewFood"
-        android:layout_width="match_parent"
-        android:layout_height="146dp"
+        android:layout_width="155dp"
+        android:layout_height="167dp"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView

@@ -138,7 +138,6 @@ public class RestClient {
             //tmpMap.put("ID",Integer.parseInt(result));
             tmpMap.put("Status",conn.getResponseCode());
 
-            Log.i("Status",new Integer(conn.getResponseCode()).toString());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,7 +221,7 @@ public class RestClient {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         Log.i("Json",textResult.trim());
-        return  textResult.trim().equals("[]")? null : new ArrayList<Food>(Arrays.asList(gson.fromJson(textResult,Food[].class)));
+        return  textResult.trim().equals("[]")|| textResult.trim().isEmpty() ? null : new ArrayList<Food>(Arrays.asList(gson.fromJson(textResult,Food[].class)));
     }
 
     public static boolean DeleteFood(int id){
@@ -238,8 +237,9 @@ public class RestClient {
 //open the connection
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
-            Log.i("error",new Integer(conn.getResponseCode()).toString());
-            flag = true;
+            int responseCode =  new Integer(conn.getResponseCode());
+            if (responseCode == 204)
+                flag = true;
         } catch (Exception e) {
             e.printStackTrace();
             flag =false;
@@ -247,7 +247,7 @@ public class RestClient {
             conn.disconnect();
             return  flag;
         }
-        //return  textResult.trim().equals("T") ? true : false;
+
     }
 
     public static boolean createFood(Food food) {

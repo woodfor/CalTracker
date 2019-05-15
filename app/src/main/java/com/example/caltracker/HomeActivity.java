@@ -119,10 +119,12 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_dailyDiet){
             nextFragment = new DailyDietFragment();
 
+
         }
+        String tag = nextFragment.getClass().getName();
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.content_frame,
-                nextFragment).commit();
+                nextFragment,tag).commit();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
