@@ -3,6 +3,7 @@ package com.example.caltracker;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -10,8 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.caltracker.RestModel.User;
 import com.example.caltracker.general.tools;
 import com.example.caltracker.Room.DailyInfoDatabase;
 import com.example.caltracker.Room.DaliyInfo;
@@ -41,6 +41,7 @@ public class StepFragment extends Fragment {
     int[] dataCell = new int[] {R.id.textViewSteps,R.id.textViewTime};
     User user;
     EditText ed;
+    private Context mContext;
     int infoID;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
@@ -51,7 +52,7 @@ public class StepFragment extends Fragment {
         final Button btn_add = vDisplayUnit.findViewById(R.id.button_add);
         user = getArguments().getParcelable("User");
         //init finished
-        db = Room.databaseBuilder(getContext(),
+        db = Room.databaseBuilder(mContext,
                 DailyInfoDatabase.class, "dailyInfo_database")
                 .fallbackToDestructiveMigration()
                 .build();
@@ -60,8 +61,8 @@ public class StepFragment extends Fragment {
         readDatabase.execute();
 
         //init dialog
-        final Dialog dialog = new Dialog(getContext());
-        final AlertDialog alertDialog =tools.alertDialog(getContext(),"Alert","Sure delete ?");
+        final Dialog dialog = new Dialog(mContext);
+        final AlertDialog alertDialog =tools.alertDialog(mContext,"Alert","Sure delete ?");
         dialog.setContentView(R.layout.dialog_step_info);
         final TextView tv = dialog.findViewById(R.id.textView);
         ed = dialog.findViewById(R.id.editText);
@@ -130,7 +131,7 @@ public class StepFragment extends Fragment {
                 String step = map.get("Steps");
                 String time= map.get("Time");
                 infoID = Integer.parseInt(map.get("ID"));
-                tv.setText(step+" at "+ time);
+                tv.setText(step+" steps at "+ time);
                 dialog.show();
 
                 return true;
@@ -140,9 +141,9 @@ public class StepFragment extends Fragment {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText edittext = new EditText(getContext());
+                final EditText edittext = new EditText(mContext);
                 edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
-                final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                final AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Set steps: ").setView(edittext)
                         .setPositiveButton("Ok",null)
                         .setNegativeButton("No",null)
@@ -191,11 +192,11 @@ public class StepFragment extends Fragment {
                     stepListArray.add(map);
                 }
                 myListAdapter = new
-                        SimpleAdapter(getContext(),stepListArray,R.layout.listview_step,colHEAD,dataCell);
+                        SimpleAdapter(mContext,stepListArray,R.layout.listview_step,colHEAD,dataCell);
                 stepList.setAdapter(myListAdapter);
             }
             else{
-                tools.toast_long(getContext(),"No step entry today");
+                tools.toast_long(mContext,"No step entry today");
             }
 
         }
@@ -223,7 +224,7 @@ public class StepFragment extends Fragment {
                 refreshFrg();
             }
             else {
-                tools.toast_short(getContext(),"Room database error");
+                tools.toast_short(mContext,"Room database error");
             }
         }
     }
@@ -249,7 +250,7 @@ public class StepFragment extends Fragment {
                 refreshFrg();
             }
             else {
-                tools.toast_short(getContext(),"DB error");
+                tools.toast_short(mContext,"DB error");
             }
         }
     }
@@ -262,6 +263,11 @@ public class StepFragment extends Fragment {
         protected void onPostExecute(Void param) {
            refreshFrg();
         }
+    }
+
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     private void refreshFrg()

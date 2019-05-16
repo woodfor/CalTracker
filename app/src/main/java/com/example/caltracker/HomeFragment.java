@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.caltracker.RestModel.User;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -60,7 +62,7 @@ public class HomeFragment extends Fragment {
             btn_editGoal.setVisibility(View.GONE);
         }
         else {
-            tv_goal.setText("Your Goal: " + goal+ " Steps");
+            tv_goal.setText("Your Goal: " + goal+ " Calories");
         }
 
         btn_setGoal.setOnClickListener(new View.OnClickListener(){
@@ -89,7 +91,7 @@ public class HomeFragment extends Fragment {
                     btn_setGoal.setVisibility(View.GONE);
                     tv_goal.setVisibility(View.VISIBLE);
                     btn_editGoal.setVisibility(View.VISIBLE);
-                    tv_goal.setText("Your Goal: " + goal + " Steps");
+                    tv_goal.setText("Your Goal: " + goal + " Calories");
                 }
 
             }

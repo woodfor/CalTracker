@@ -1,4 +1,4 @@
-package com.example.caltracker;
+package com.example.caltracker.RestModel;
 
 import java.math.BigDecimal;
 

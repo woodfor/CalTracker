@@ -1,8 +1,11 @@
 package com.example.caltracker;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -18,11 +21,20 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.caltracker.IntentService.ScheduledIntentService;
+import com.example.caltracker.RestModel.User;
+
+import java.util.Calendar;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     HomeFragment homeFragment;
     StepFragment stepFragment;
+    DailyDietFragment dailyDietFragment;
+    private AlarmManager alarmMgr;
+    private Intent alarmIntent;
+    private PendingIntent pendingIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +42,17 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Service and alarm
+        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmIntent = new Intent(this, ScheduledIntentService.class);
+        pendingIntent = PendingIntent.getService(this, 0, alarmIntent, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        alarmMgr.setRepeating(AlarmManager.RTC,
+                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        //Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -44,6 +67,8 @@ public class HomeActivity extends AppCompatActivity
         homeFragment.setArguments(bundle);
         stepFragment = new StepFragment();
         stepFragment.setArguments(bundle);
+        dailyDietFragment = new DailyDietFragment();
+        dailyDietFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment).commit();
         View headerView = navigationView.getHeaderView(0);
@@ -120,7 +145,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         } else if (id == R.id.nav_dailyDiet){
-            nextFragment = new DailyDietFragment();
+            nextFragment = dailyDietFragment;
 
         }
         String tag = nextFragment.getClass().getName();

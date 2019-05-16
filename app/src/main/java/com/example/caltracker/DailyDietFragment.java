@@ -2,17 +2,16 @@ package com.example.caltracker;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,24 +27,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.caltracker.ui.login.LoginActivity;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.hash.Hashing;
+import com.example.caltracker.API.FatSecretAPI;
+import com.example.caltracker.API.RestClient;
+import com.example.caltracker.API.SearchGoogleAPI;
+import com.example.caltracker.RestModel.Consumption;
+import com.example.caltracker.RestModel.Food;
+import com.example.caltracker.RestModel.User;
+import com.example.caltracker.general.tools;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.caltracker.RestClient.FoodList;
+import static com.example.caltracker.API.RestClient.FoodList;
 
 public class DailyDietFragment extends Fragment {
     List<HashMap<String, String>> foodListArray;
@@ -63,12 +64,16 @@ public class DailyDietFragment extends Fragment {
     TextView tv_sa;
     TextView tv_fat;
     ImageView foodImage;
+    ArrayList<Food> consumptions;
+    User user;
+    private Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         vDisplayUnit = inflater.inflate(R.layout.fragment_dailydiet, container, false);
         ((HomeActivity) getActivity())
                 .setActionBarTitle("Your Daily Diet");
+        user = getArguments().getParcelable("User");
         foodImage = vDisplayUnit.findViewById(R.id.imageViewFood);
         tv_cal = vDisplayUnit.findViewById(R.id.textViewCal);
         tv_fn = vDisplayUnit.findViewById(R.id.textViewFN);
@@ -79,6 +84,7 @@ public class DailyDietFragment extends Fragment {
         spinner = vDisplayUnit.findViewById(R.id.spinnerCategory);
         foodList = vDisplayUnit.findViewById(R.id.listView_food);
         foodListArray = new ArrayList<HashMap<String, String>>();
+        consumptions = new ArrayList<Food>();
 
         //init spinner
         PostAsyncTask task = new  PostAsyncTask();
@@ -91,13 +97,14 @@ public class DailyDietFragment extends Fragment {
                 String category = parent.getItemAtPosition(position).toString().trim();
                 foodListArray.clear();
                 if(foods == null) {
-                    Toast.makeText(getContext(),"Server error",Toast.LENGTH_SHORT);
+                    Toast.makeText(mContext,"Server error",Toast.LENGTH_SHORT);
                 }
                 else {
                     for(Food i : foods){
                         if (i.getCategory().equals(category)){
                             map=new HashMap<String, String>();
                             map.put("FoodName",i.getName());
+                            map.put("ID",i.getFid()+"");
                             foodListArray.add(map);
                         }
                     }
@@ -119,9 +126,10 @@ public class DailyDietFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String,String> map = (Map<String,String>) parent.getItemAtPosition(position);
                 String foodName = map.get("FoodName");
+                String ID = map.get("ID");
                 for(Food i : foods)
                 {
-                    if (i.getName().equals(foodName))
+                    if (i.getFid() == Integer.parseInt(ID))
                     {
                         showFood=i;
                     }
@@ -137,6 +145,31 @@ public class DailyDietFragment extends Fragment {
             }
         });
 
+        foodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String,String> map = (Map<String,String>) parent.getItemAtPosition(position);
+                String foodName = map.get("FoodName");
+                String ID = map.get("ID");
+                for(Food i : foods)
+                {
+                    if (i.getFid() == Integer.parseInt(ID))
+                    {
+                        showFood=i;
+                    }
+                }
+                AlertDialog alertDialog = tools.alertDialog(getContext(),"Alert","Eat " + foodName +" ?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "SURE!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        consumptions.add(showFood);
+                    }
+                });
+                alertDialog.show();
+                return false;
+            }
+        } );
+
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Delete " + "displaying food ?");alertDialog.setMessage("Are you sure ?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
@@ -144,19 +177,10 @@ public class DailyDietFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                             if (RestClient.DeleteFood(showFood.getFid()) == true)
                             {
-                                String tag = this.getClass().getName();
-                                //remove the last two char
-                                tag = tag.substring(0,tag.indexOf("$"));
-                                Fragment frg = null;
-                                frg = getFragmentManager().findFragmentByTag(tag);
-                                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                if (Build.VERSION.SDK_INT >= 26) {
-                                    ft.setReorderingAllowed(false);
-                                }
-                                ft.detach(frg).attach(frg).commit();
+                                refreshFrg();
                             }
                             else
-                                Toast.makeText(getContext(),"Server error",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext,"Server error",Toast.LENGTH_SHORT).show();
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
@@ -198,7 +222,7 @@ public class DailyDietFragment extends Fragment {
                             }
                         }
                         if (flag == true){
-                            Toast.makeText(getContext(),"This food already exists",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext,"This food already exists",Toast.LENGTH_SHORT).show();
                         }
                         else{
                             new FatSecretAsyncTask().execute(foodName);
@@ -212,8 +236,11 @@ public class DailyDietFragment extends Fragment {
         return vDisplayUnit;
     }
 
+    public void onStop() {
+        super.onStop();
+        new addConsumption().execute();
 
-
+    }
 
     private class PostAsyncTask extends AsyncTask<Void, Void, ArrayList<Food>>
     {
@@ -226,7 +253,7 @@ public class DailyDietFragment extends Fragment {
         protected void onPostExecute(ArrayList<Food> foods) {
 
             if (foods == null) {
-                Toast.makeText(getContext(),"Server error",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Server error",Toast.LENGTH_SHORT).show();
             } else {
                 List<String> cateList = new ArrayList<String>();
                 for (Food i : foods) {
@@ -246,7 +273,7 @@ public class DailyDietFragment extends Fragment {
 
         public DownloadImageFromInternet(ImageView imageView) {
             this.imageView = imageView;
-            Toast.makeText(getContext(), "Please wait, picture may take a while to load...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "Please wait, picture may take a while to load...", Toast.LENGTH_SHORT).show();
         }
 
         protected Bitmap doInBackground(String... foodNames) {
@@ -276,7 +303,7 @@ public class DailyDietFragment extends Fragment {
             if(result!=null)
                 imageView.setImageBitmap(result);
             else {
-                Toast.makeText(getContext(),"No image found",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"No image found",Toast.LENGTH_SHORT).show();
                 imageView.setImageResource(R.drawable.blackhole);
             }
         }
@@ -292,7 +319,7 @@ public class DailyDietFragment extends Fragment {
         protected void onPostExecute(final JSONObject food) {
 
             if (food == null) {
-                Toast.makeText(getContext(),"No Such food",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"No Such food",Toast.LENGTH_SHORT).show();
             } else {
 
                 JSONObject servings = null;
@@ -362,10 +389,16 @@ public class DailyDietFragment extends Fragment {
                                         dialog.dismiss();
                                     }
                                     else {
+                                        //food name can be same,but all info can not be same.
                                         newFood.setCategory(edt_d.getText().toString().trim());
-
-                                        new addFood().execute(newFood);
-                                        edt_d.setText("");
+                                        if (!foods.contains(newFood)){
+                                            new addFood().execute(newFood);
+                                            edt_d.setText("");
+                                        }
+                                        else {
+                                            tools.toast_short(mContext,"Food contained");
+                                        }
+                                        dialog.dismiss();
                                     }
                             }
                         }
@@ -403,21 +436,63 @@ public class DailyDietFragment extends Fragment {
         protected void onPostExecute(Food food) {
             if (food!=null)
             {
-                Toast.makeText(getContext(),"Food added",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Food added",Toast.LENGTH_SHORT).show();
                 new DownloadImageFromInternet(foodImage).execute(food.getName());
-                String tag = this.getClass().getName();
-                //remove the last two char
-                tag = tag.substring(0,tag.indexOf("$")-1);
-                Fragment frg = null;
-                frg = getFragmentManager().findFragmentByTag(tag);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                if (Build.VERSION.SDK_INT >= 26) {
-                    ft.setReorderingAllowed(false);
-                }
-                ft.detach(frg).attach(frg).commit();
+                refreshFrg();
             }
             else
-                Toast.makeText(getContext(),"backend error",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"backend error",Toast.LENGTH_SHORT).show();
         }
+    }
+    private class addConsumption extends AsyncTask<Void,Void,Boolean>
+    {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            ArrayList<Consumption> table = new ArrayList<>();
+            if (!consumptions.isEmpty())
+            {
+                Iterator<Food> iter = consumptions.iterator();
+                while (iter.hasNext())
+                {
+                    Consumption consumption = new Consumption(iter.next(),user);
+                    table.add(consumption);
+                }
+                return  RestClient.createConsumptions(table);
+            }
+           return false;
+        }
+        protected void onPostExecute(Boolean flag)
+        {
+            if (flag)
+            {
+                tools.toast_long(mContext,"Your consumptions are added into backend database");
+            }
+
+        }
+    }
+
+
+
+    // Initialise it from onAttach()
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    private void refreshFrg()
+    {
+        String tag = this.getClass().getName();
+        //remove the last two char
+        if (tag.indexOf("$")!=-1)
+            tag = tag.substring(0,tag.indexOf("$"));
+        Fragment frg = null;
+        frg = getFragmentManager().findFragmentByTag(tag);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (Build.VERSION.SDK_INT >= 26) {
+            ft.setReorderingAllowed(false);
+        }
+        ft.detach(frg).attach(frg).commit();
     }
 }

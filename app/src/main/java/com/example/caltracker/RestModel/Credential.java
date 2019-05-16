@@ -1,4 +1,6 @@
-package com.example.caltracker;
+package com.example.caltracker.RestModel;
+
+import com.example.caltracker.RestModel.User;
 
 import java.util.Date;
 

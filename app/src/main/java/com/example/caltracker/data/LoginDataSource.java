@@ -1,11 +1,11 @@
 package com.example.caltracker.data;
 
-import com.example.caltracker.User;
+import com.example.caltracker.RestModel.User;
 import com.example.caltracker.data.model.LoggedInUser;
 
 import java.io.IOException;
 
-import static com.example.caltracker.RestClient.UserAuth;
+import static com.example.caltracker.API.RestClient.UserAuth;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.

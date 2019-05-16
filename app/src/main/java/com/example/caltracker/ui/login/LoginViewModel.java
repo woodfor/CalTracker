@@ -3,14 +3,13 @@ package com.example.caltracker.ui.login;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Patterns;
 
 import com.example.caltracker.data.LoginRepository;
 import com.example.caltracker.data.Result;
 import com.example.caltracker.data.model.LoggedInUser;
 import com.example.caltracker.R;
 
-import static com.example.caltracker.RestClient.userExist;
+import static com.example.caltracker.API.RestClient.userExist;
 
 public class LoginViewModel extends ViewModel {
 

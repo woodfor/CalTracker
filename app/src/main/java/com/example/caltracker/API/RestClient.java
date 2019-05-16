@@ -1,8 +1,10 @@
-package com.example.caltracker;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+package com.example.caltracker.API;
 import android.util.Log;
 
+import com.example.caltracker.RestModel.Consumption;
+import com.example.caltracker.RestModel.Credential;
+import com.example.caltracker.RestModel.Food;
+import com.example.caltracker.RestModel.User;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -285,6 +287,51 @@ public class RestClient {
             return true;
         }
 
+    }
+
+    public static Boolean createConsumptions(List<Consumption> consumptions){
+        //initialise
+        URL url = null;
+        HttpURLConnection conn = null;
+        Boolean flag = false;
+        final String methodPath="food.consumption";
+        Map<String,Integer> tmpMap = null;
+        try {
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+            String stringCourseJson=gson.toJson(consumptions);
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to POST
+            conn.setRequestMethod("POST");
+            //set the output to true
+            conn.setDoOutput(true);
+//set length of the data you want to send
+            conn.setFixedLengthStreamingMode(stringCourseJson.getBytes().length);
+//add HTTP headers
+            conn.setRequestProperty("Content-Type", "application/json");
+//Send the POST out
+            PrintWriter out= new PrintWriter(conn.getOutputStream());
+            out.print(stringCourseJson);
+            out.close();
+            tmpMap = new HashMap<String,Integer>();
+            //tmpMap.put("ID",Integer.parseInt(result));
+            tmpMap.put("Status",conn.getResponseCode());
+            if(conn.getResponseCode() == 204)
+            {
+                flag = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            return flag;
+        }
     }
 }
 

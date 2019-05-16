@@ -1,4 +1,4 @@
-package com.example.caltracker;
+package com.example.caltracker.RestModel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

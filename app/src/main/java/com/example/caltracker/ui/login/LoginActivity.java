@@ -3,30 +3,22 @@ package com.example.caltracker.ui.login;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caltracker.HomeActivity;
 import com.example.caltracker.R;
 import com.example.caltracker.Activity_signUp;
-import com.example.caltracker.TestActivity;
-import com.example.caltracker.User;
+import com.example.caltracker.RestModel.User;
 
 public class LoginActivity extends AppCompatActivity {
 

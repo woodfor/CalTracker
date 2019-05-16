@@ -1,4 +1,4 @@
-package com.example.caltracker;
+package com.example.caltracker.API;
 
 import android.net.Uri;
 import android.util.Base64;

@@ -1,10 +1,7 @@
 package com.example.caltracker;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -15,35 +12,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.utility.custom.SimpleCustomValidation;
+import com.example.caltracker.API.RestClient;
+import com.example.caltracker.RestModel.Credential;
+import com.example.caltracker.RestModel.User;
 import com.example.caltracker.ui.login.LoginActivity;
 import com.google.common.collect.Range;
 import com.google.common.hash.Hashing;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.basgeekball.awesomevalidation.ValidationStyle.COLORATION;
-import static com.example.caltracker.RestClient.userExist;
+import static com.example.caltracker.API.RestClient.userExist;
 import static java.util.Arrays.asList;
 
 public class Activity_signUp extends AppCompatActivity {

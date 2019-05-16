@@ -1,6 +1,6 @@
 package com.example.caltracker.data.model;
 
-import com.example.caltracker.User;
+import com.example.caltracker.RestModel.User;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

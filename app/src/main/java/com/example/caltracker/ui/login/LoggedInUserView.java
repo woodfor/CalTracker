@@ -1,6 +1,6 @@
 package com.example.caltracker.ui.login;
 
-import com.example.caltracker.User;
+import com.example.caltracker.RestModel.User;
 
 /**
  * Class exposing authenticated user details to the UI.

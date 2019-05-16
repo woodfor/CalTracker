@@ -1,4 +1,4 @@
-package com.example.caltracker;
+package com.example.caltracker.API;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
