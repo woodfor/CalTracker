@@ -22,6 +22,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     HomeFragment homeFragment;
+    StepFragment stepFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,8 @@ public class HomeActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Calorie Tracker");
         homeFragment = new HomeFragment();
         homeFragment.setArguments(bundle);
+        stepFragment = new StepFragment();
+        stepFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment).commit();
         View headerView = navigationView.getHeaderView(0);
@@ -106,8 +109,8 @@ public class HomeActivity extends AppCompatActivity
         Fragment nextFragment = null;
         if (id == R.id.nav_home) {
             nextFragment = homeFragment;
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.nav_display_steps) {
+            nextFragment = stepFragment;
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_tools) {
@@ -118,7 +121,6 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_dailyDiet){
             nextFragment = new DailyDietFragment();
-
 
         }
         String tag = nextFragment.getClass().getName();

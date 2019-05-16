@@ -12,9 +12,10 @@
         <item
             android:id="@+id/nav_dailyDiet"
             android:title="Daily Diet" />
+
         <item
-            android:id="@+id/nav_display_unit"
-            android:title="Display Unit" />
+            android:id="@+id/nav_display_steps"
+            android:title="Display steps" />
 
         <item
             android:id="@+id/nav_gallery"

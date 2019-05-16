@@ -79,12 +79,12 @@ public class DailyDietFragment extends Fragment {
         spinner = vDisplayUnit.findViewById(R.id.spinnerCategory);
         foodList = vDisplayUnit.findViewById(R.id.listView_food);
         foodListArray = new ArrayList<HashMap<String, String>>();
+
         //init spinner
         PostAsyncTask task = new  PostAsyncTask();
         task.execute();
-
         foodImage.setImageResource(R.drawable.blackhole);
-        tv_fn.setText("All food is \"sucked\"");
+        tv_fn.setText("All foods are \"sucked\"");
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -178,14 +178,20 @@ public class DailyDietFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final EditText edittext = new EditText(getContext());
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Add Food").setView(edittext).setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Food Name: ").setView(edittext)
+                        .setPositiveButton("Ok",null)
+                        .setNegativeButton("No",null)
+                        .show();
+                Button btn_positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                btn_positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         String foodName = edittext.getText().toString().trim();
                         boolean flag = false;
                         for (Food i : foods)
                         {
-                            //Todo: check every character
+
                             if (i.getName().compareToIgnoreCase(foodName)==0)
                             {
                                 flag = true;
@@ -195,23 +201,18 @@ public class DailyDietFragment extends Fragment {
                             Toast.makeText(getContext(),"This food already exists",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                           new FatSecretAsyncTask().execute(foodName);
-
+                            new FatSecretAsyncTask().execute(foodName);
+                            dialog.dismiss();
                         }
                     }
-                })
-                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                            }
-                        }).show();
+                });
             }
         });
 
         return vDisplayUnit;
     }
 
-    //Todo: check food name repeat when add
+
 
 
     private class PostAsyncTask extends AsyncTask<Void, Void, ArrayList<Food>>
@@ -256,19 +257,28 @@ public class DailyDietFragment extends Fragment {
             String result = SearchGoogleAPI.search(foodName,params,values);
             imageURL = SearchGoogleAPI.getImageUrl(result);
             Bitmap bimage = null;
-            try {
-                InputStream in = new java.net.URL(imageURL).openStream();
-                bimage = BitmapFactory.decodeStream(in);
+            if (imageURL != null)
+            {
+                try {
+                    InputStream in = new java.net.URL(imageURL).openStream();
+                    bimage = BitmapFactory.decodeStream(in);
 
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
+                } catch (Exception e) {
+                    Log.e("Error Message", e.getMessage());
+                    e.printStackTrace();
+                }
             }
+
             return bimage;
         }
 
         protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
+            if(result!=null)
+                imageView.setImageBitmap(result);
+            else {
+                Toast.makeText(getContext(),"No image found",Toast.LENGTH_SHORT).show();
+                imageView.setImageResource(R.drawable.blackhole);
+            }
         }
     }
     private class FatSecretAsyncTask extends AsyncTask<String, Void, JSONObject>
@@ -347,13 +357,13 @@ public class DailyDietFragment extends Fragment {
                                     if (findcate!=null)
                                     {
                                         newFood.setCategory(findcate);
-                                        //Todo: textview in main page should also change.
+
                                         new addFood().execute(newFood);
                                         dialog.dismiss();
                                     }
                                     else {
                                         newFood.setCategory(edt_d.getText().toString().trim());
-                                        //Todo: textview in main page should also change.
+
                                         new addFood().execute(newFood);
                                         edt_d.setText("");
                                     }

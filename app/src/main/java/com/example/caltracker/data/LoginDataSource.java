@@ -13,7 +13,7 @@ import static com.example.caltracker.RestClient.UserAuth;
 public class LoginDataSource {
 
     public Result<LoggedInUser> login(String username, String password) {
-        // TODO: handle loggedInUser authentication
+
         try {
             User user = UserAuth(username,password);
             if (user != null){

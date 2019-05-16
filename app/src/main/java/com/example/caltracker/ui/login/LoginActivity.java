@@ -139,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText tmp = findViewById(R.id.username);
         String welcome = getString(R.string.welcome) + " " + model.getDisplayName();
         User user = model.getUser();
-        // TODO : initiate successful logged in experience
+
         Intent intent = new Intent(LoginActivity.this,
                 HomeActivity.class);
         Bundle bundle = new Bundle();

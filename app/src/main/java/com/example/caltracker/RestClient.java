@@ -138,7 +138,6 @@ public class RestClient {
             //tmpMap.put("ID",Integer.parseInt(result));
             tmpMap.put("Status",conn.getResponseCode());
 
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
