@@ -64,7 +64,7 @@ public class StepFragment extends Fragment {
         final Dialog dialog = new Dialog(mContext);
         final AlertDialog alertDialog =tools.alertDialog(mContext,"Alert","Sure delete ?");
         dialog.setContentView(R.layout.dialog_step_info);
-        final TextView tv = dialog.findViewById(R.id.textView);
+        final TextView tv = dialog.findViewById(R.id.TextViewDtv);
         ed = dialog.findViewById(R.id.editText);
         final Button btn_edt = dialog.findViewById(R.id.buttonEdit);
         final Button btn_cancel = dialog.findViewById(R.id.buttonCancel);

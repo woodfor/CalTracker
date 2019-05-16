@@ -18,9 +18,9 @@
             android:title="Display steps" />
 
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_display_tracker"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Daily tracker" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

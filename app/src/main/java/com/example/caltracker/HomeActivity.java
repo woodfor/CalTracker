@@ -32,6 +32,7 @@ public class HomeActivity extends AppCompatActivity
     HomeFragment homeFragment;
     StepFragment stepFragment;
     DailyDietFragment dailyDietFragment;
+    DailyTrackerFragment dailyTrackerFragment;
     private AlarmManager alarmMgr;
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
@@ -69,6 +70,8 @@ public class HomeActivity extends AppCompatActivity
         stepFragment.setArguments(bundle);
         dailyDietFragment = new DailyDietFragment();
         dailyDietFragment.setArguments(bundle);
+        dailyTrackerFragment = new DailyTrackerFragment();
+        dailyTrackerFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment).commit();
         View headerView = navigationView.getHeaderView(0);
@@ -136,8 +139,8 @@ public class HomeActivity extends AppCompatActivity
             nextFragment = homeFragment;
         } else if (id == R.id.nav_display_steps) {
             nextFragment = stepFragment;
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_display_tracker) {
+            nextFragment = dailyTrackerFragment;
         } else if (id == R.id.nav_tools) {
 
         } else if (id == R.id.nav_share) {
