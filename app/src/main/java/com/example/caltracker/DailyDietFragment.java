@@ -137,7 +137,7 @@ public class DailyDietFragment extends Fragment {
                 }
                 new DownloadImageFromInternet(foodImage)
                         .execute(foodName);
-                tv_cal.setText("Calories: " + showFood.getCalamount()+"kcal");
+                tv_cal.setText("Calories: " + showFood.getCalamount()+"cal");
                 tv_fn.setText("Food Name: " + showFood.getName());
                 tv_fat.setText("Fat: " + showFood.getFat()+"g");
                 tv_sa.setText("Per "+ showFood.getServingamount()+ showFood.getServingunit());
@@ -518,10 +518,6 @@ public class DailyDietFragment extends Fragment {
             if (flag)
             {
                 tools.toast_long(mContext,"Your consumptions are added into backend database");
-            }
-            else
-            {
-                tools.toast_short(mContext,"Sever error");
             }
 
         }

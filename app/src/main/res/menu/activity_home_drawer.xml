@@ -23,6 +23,16 @@
             android:title="Daily tracker" />
 
         <item
+            android:id="@+id/nav_display_report"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Report" />
+
+        <item
+            android:id="@+id/nav_display_map"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Map" />
+
+        <item
             android:id="@+id/nav_display_logout"
             android:title="Log out" />
 

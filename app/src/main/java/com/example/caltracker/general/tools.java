@@ -3,10 +3,17 @@ package com.example.caltracker.general;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
+
+import com.example.caltracker.R;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+
+import java.util.Map;
 
 public class tools {
 
@@ -43,4 +50,6 @@ public class tools {
         });
         return alertDialog;
     }
+
+
 }

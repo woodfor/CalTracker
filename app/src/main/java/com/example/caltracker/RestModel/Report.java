@@ -17,4 +17,24 @@ public class Report {
         this.calgoal = calgoal;
         this.uid = user;
     }
+
+    public Date getReportdate() {
+        return reportdate;
+    }
+
+    public int getCalgoal() {
+        return calgoal;
+    }
+
+    public int getTotalcalconsume() {
+        return totalcalconsume;
+    }
+
+    public int getTotalsteps() {
+        return totalsteps;
+    }
+
+    public int getTotalcalburned() {
+        return totalcalburned;
+    }
 }

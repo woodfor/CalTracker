@@ -101,6 +101,7 @@ public class DailyTrackerFragment extends Fragment {
                 Intent intent = new Intent(appContext, ScheduledIntentService.class);
                 intent.putExtras(getArguments());
                 appContext.startService(intent);
+                refreshFrg();
             }
         });
         return vDisplayUnit;
@@ -160,7 +161,10 @@ public class DailyTrackerFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(String goal) {
-            tv_goal.setText("Your daily goal: " + goal);
+            if (!goal.isEmpty())
+                tv_goal.setText("Your daily goal: " + goal+"cal");
+            else
+                tv_goal.setText("");
         }
 
     }
@@ -191,7 +195,7 @@ public class DailyTrackerFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Long number) {
-            tv_burned.setText("Your daily calorie burned:  " +  number);
+            tv_burned.setText("Your daily calorie burned:  " +  number + "cal");
         }
     }
 
@@ -224,7 +228,7 @@ public class DailyTrackerFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer result) {
             if (result != -1){
-                tv_consume.setText("Daily Calorie consumed: " + result + "kcal");
+                tv_consume.setText("Daily Calorie consumed: " + result + "cal");
             }
             else {
                 tv_consume.setText("Did not eat anything");

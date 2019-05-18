@@ -34,6 +34,8 @@ public class HomeActivity extends AppCompatActivity
     StepFragment stepFragment;
     DailyDietFragment dailyDietFragment;
     DailyTrackerFragment dailyTrackerFragment;
+    ReportFragment reportFragment;
+    MapFragment mapFragment;
     private AlarmManager alarmMgr;
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
@@ -74,6 +76,10 @@ public class HomeActivity extends AppCompatActivity
         dailyDietFragment.setArguments(bundle);
         dailyTrackerFragment = new DailyTrackerFragment();
         dailyTrackerFragment.setArguments(bundle);
+        reportFragment = new ReportFragment();
+        reportFragment.setArguments(bundle);
+        mapFragment = new MapFragment();
+        mapFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment).commit();
         View headerView = navigationView.getHeaderView(0);
@@ -147,8 +153,12 @@ public class HomeActivity extends AppCompatActivity
 
         }  else if (id == R.id.nav_dailyDiet){
             nextFragment = dailyDietFragment;
-
+        }  else if (id == R.id.nav_display_report){
+            nextFragment = reportFragment;
+        }  else if (id == R.id.nav_display_map){
+            nextFragment = mapFragment;
         }
+
         if (id != R.id.nav_display_logout)
         {
             String tag = nextFragment.getClass().getName();

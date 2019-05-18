@@ -10,11 +10,14 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONObject;
+
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -556,7 +559,109 @@ public class RestClient {
             conn.disconnect();
             return true;
         }
+    }
 
+    public static Map<String,Integer>  getTCCTCBRC(int uid,String date) {
+        //initialise
+        URL url = null;
+        HttpURLConnection conn = null;
+        final String methodPath;
+        String textResult = "";
+        Map<String,Integer> map = null;
+        try {
+            methodPath = "food.report/getTCCTCBRCByUidAndDate/"+uid+"/"+date;
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to GET
+            conn.setRequestMethod("GET");
+//add http headers to set your response type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+//Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+//read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+            if (conn.getResponseCode() == 200)
+            {
+                map = new HashMap<>();
+                JSONObject jsonObject = new JSONObject(textResult);
+                int totalBurned = jsonObject.getInt("burned");
+                int remained = jsonObject.getInt("remained");
+                int consumed = jsonObject.getInt("consumed");
+                map.put("Consumed",consumed);
+                int tmp;
+                int basicBurned = getBasicDailyCalorieBurned(uid);
+                if (basicBurned != -1)
+                {
+                    map.put("Basic burned",basicBurned);
+                    map.put("Other burned", totalBurned-basicBurned);;
+                    map.put("Remained",(tmp=(remained - basicBurned))<0 ? 0:tmp);
+                }
+                else
+                {
+                    map.put("Total Burned",totalBurned);
+                    map.put("Remained",remained);
+                }
+
+            }
+            //Log.i("error",new Integer(conn.getResponseCode()));
+            //Log.i("error",stringCourseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            return map;
+        }
+
+    }
+
+    public static List<Report> getReportsByPeriod(int uid,String fromDate,String endDate) {
+        //initialise
+        URL url = null;
+        HttpURLConnection conn = null;
+        final String methodPath;
+        String textResult = "";
+        try {
+            methodPath = "food.report/getReportsByUidAndDates/"+uid+"/"+fromDate+"/"+endDate;
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to GET
+            conn.setRequestMethod("GET");
+//add http headers to set your response type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+//Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+//read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+
+            if (conn.getResponseCode() == 200)
+            {
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("yyyy-MM-dd").create();
+                return  textResult.trim().isEmpty() ? null : (textResult.trim().equals("[]") ? new ArrayList<Report>() : new ArrayList<Report>(Arrays.asList(gson.fromJson(textResult,Report[].class))));
+            }
+            //Log.i("error",new Integer(conn.getResponseCode()));
+            //Log.i("error",stringCourseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+
+        }
+        return null;
     }
 
 }
