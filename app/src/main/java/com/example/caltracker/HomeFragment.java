@@ -1,6 +1,7 @@
 package com.example.caltracker;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ import java.io.OutputStreamWriter;
 
 public class HomeFragment extends Fragment {
     View vDisplayUnit;
+    private Context mContext;
+    private Context appContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
@@ -40,8 +43,9 @@ public class HomeFragment extends Fragment {
         ((HomeActivity) getActivity())
                 .setActionBarTitle("Calorie tracker");
         String goal="";
+
         try{
-            FileInputStream fileInputStream= getContext().openFileInput(user.getUid().toString());
+            FileInputStream fileInputStream= appContext.openFileInput(user.getUid().toString());
             if (fileInputStream!=null){
                 BufferedReader bufferedReader= new BufferedReader(new
                         InputStreamReader(fileInputStream));
@@ -75,7 +79,7 @@ public class HomeFragment extends Fragment {
                 }
                 else {
                     try{
-                        FileOutputStream fileOutputStream = getContext().openFileOutput(user.getUid().toString(),
+                        FileOutputStream fileOutputStream = appContext.openFileOutput(user.getUid().toString(),
                                 Context.MODE_PRIVATE);
                         BufferedWriter bufferedWriter = new BufferedWriter(new
                                 OutputStreamWriter(fileOutputStream));
@@ -112,5 +116,13 @@ public class HomeFragment extends Fragment {
         // DailyDietFragment.PostAsyncTask task = new DailyDietFragment.PostAsyncTask();
         //task.execute();
         return vDisplayUnit;
+    }
+
+    // Initialise it from onAttach()
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        appContext = getActivity().getApplicationContext();
     }
 }

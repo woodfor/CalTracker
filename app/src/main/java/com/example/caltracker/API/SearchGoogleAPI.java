@@ -24,10 +24,11 @@ public class SearchGoogleAPI {
                 query_parameter += values[i];
             }
         }
+        keyword  = keyword.replace(" ","%20");
         try {
             url = new URL("https://www.googleapis.com/customsearch/v1?key=" +
                     API_KEY + "&cx=" + SEARCH_ID_cx + "&q=" + keyword + query_parameter);
-            //url = new URL("http://192.168.0.213:8080/Food/webresources/food.usercal");
+
             connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(15000);

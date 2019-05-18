@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.caltracker.IntentService.ScheduledIntentService;
 import com.example.caltracker.RestModel.User;
+import com.example.caltracker.ui.login.LoginActivity;
 
 import java.util.Calendar;
 
@@ -43,9 +44,11 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Bundle bundle = getIntent().getExtras();
         //Service and alarm
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmIntent = new Intent(this, ScheduledIntentService.class);
+        alarmIntent.putExtras(bundle);
         pendingIntent = PendingIntent.getService(this, 0, alarmIntent, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -61,7 +64,6 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        Bundle bundle = getIntent().getExtras();
         final User user = bundle.getParcelable("User");
         getSupportActionBar().setTitle("Calorie Tracker");
         homeFragment = new HomeFragment();
@@ -141,22 +143,27 @@ public class HomeActivity extends AppCompatActivity
             nextFragment = stepFragment;
         } else if (id == R.id.nav_display_tracker) {
             nextFragment = dailyTrackerFragment;
-        } else if (id == R.id.nav_tools) {
+        } else if (id == R.id.nav_display_logout) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        } else if (id == R.id.nav_dailyDiet){
+        }  else if (id == R.id.nav_dailyDiet){
             nextFragment = dailyDietFragment;
 
         }
-        String tag = nextFragment.getClass().getName();
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.content_frame,
-                nextFragment,tag).commit();
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (id != R.id.nav_display_logout)
+        {
+            String tag = nextFragment.getClass().getName();
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().replace(R.id.content_frame,
+                    nextFragment,tag).commit();
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else
+        {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startService(intent);
+            finish();
+        }
         return true;
     }
 

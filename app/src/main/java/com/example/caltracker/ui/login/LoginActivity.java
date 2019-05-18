@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                finish();
+                //finish();
             }
         });
 
@@ -141,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         startActivity(intent);
+
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

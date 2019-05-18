@@ -4,12 +4,14 @@ import android.util.Log;
 import com.example.caltracker.RestModel.Consumption;
 import com.example.caltracker.RestModel.Credential;
 import com.example.caltracker.RestModel.Food;
+import com.example.caltracker.RestModel.Report;
 import com.example.caltracker.RestModel.User;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -335,7 +337,7 @@ public class RestClient {
             return flag;
         }
     }
-    public static Boolean getConsumptions(int uid) {
+    public static List<Consumption> getConsumptions(int uid) {
 
         final String methodPath = "food.consumption/getConsumptionByUidAndDate/"+uid+"/"+ new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         //initialise
@@ -361,14 +363,200 @@ public class RestClient {
             while (inStream.hasNextLine()) {
                 textResult += inStream.nextLine();
             }
-            //todo: form json
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             conn.disconnect();
         }
-        return  textResult.trim().equals("T") ? true : false;
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd").create();
+        Log.i("Json",textResult.trim());
+        return  textResult.trim().isEmpty() ? null : (textResult.trim().equals("[]") ? new ArrayList<Consumption>() : new ArrayList<Consumption>(Arrays.asList(gson.fromJson(textResult,Consumption[].class))));
+    }
+
+    public static boolean DeleteConsumption(int id){
+        final String methodPath = "food.consumption/"+id;
+        //initialise
+        URL url = null;
+        HttpURLConnection conn = null;
+        String textResult = "";
+        boolean flag = false;
+//Making HTTP request
+        try {
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("DELETE");
+            int responseCode =  new Integer(conn.getResponseCode());
+            if (responseCode == 204)
+                flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            flag =false;
+        } finally {
+            conn.disconnect();
+            return  flag;
+        }
+
+    }
+
+    public static Integer getDailyCalorieConsumed(int uid) {
+        //initialise
+        URL url = null;
+        Integer calorie = -1;
+        HttpURLConnection conn = null;
+        final String methodPath = "food.consumption/getCalorieConsumedByUidAndDate/"+uid+"/"+ new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String textResult = "";
+        try {
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to GET
+            conn.setRequestMethod("GET");
+//add http headers to set your response type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+//Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+//read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+            if (!(conn.getResponseCode() != 200 || textResult.trim().equals(null)))
+            {
+                calorie =  Integer.parseInt(textResult.trim());
+            }
+            //Log.i("error",new Integer(conn.getResponseCode()));
+            //Log.i("error",stringCourseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            return calorie;
+        }
+
+    }
+
+    public static Integer getBasicDailyCalorieBurned(int uid) {
+        //initialise
+        URL url = null;
+        Integer calorie = -1;
+        HttpURLConnection conn = null;
+        final String methodPath = "food.usercal/getDailyCalorieBurnedByUid/"+uid;
+        String textResult = "";
+        try {
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to GET
+            conn.setRequestMethod("GET");
+//add http headers to set your response type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+//Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+//read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+            if (conn.getResponseCode() == 200)
+            {
+                calorie =  Integer.parseInt(textResult.trim());
+            }
+            //Log.i("error",new Integer(conn.getResponseCode()));
+            //Log.i("error",stringCourseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            return calorie;
+        }
+
+    }
+
+    public static double getCalPerStep(int uid) {
+        //initialise
+        URL url = null;
+        double calorie = -1;
+        HttpURLConnection conn = null;
+        final String methodPath = "food.usercal/getCalorieBurnedPerStepByUid/"+uid;
+        String textResult = "";
+        try {
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to GET
+            conn.setRequestMethod("GET");
+//add http headers to set your response type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+//Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+//read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+            if (conn.getResponseCode() == 200)
+            {
+                calorie =  Double.parseDouble(textResult.trim());
+            }
+            //Log.i("error",new Integer(conn.getResponseCode()));
+            //Log.i("error",stringCourseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            return calorie;
+        }
+
+    }
+
+    public static boolean createReport(Report report) {
+        //initialise
+        URL url = null;
+        HttpURLConnection conn = null;
+        final String methodPath = "food.report";
+        try {
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+            String stringCourseJson = gson.toJson(report);
+            url = new URL(BASE_URL + methodPath);
+//open the connection
+            conn = (HttpURLConnection) url.openConnection();
+//set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+//set the connection method to POST
+            conn.setRequestMethod("POST");
+            //set the output to true
+            conn.setDoOutput(true);
+//set length of the data you want to send
+            conn.setFixedLengthStreamingMode(stringCourseJson.getBytes().length);
+//add HTTP headers
+            conn.setRequestProperty("Content-Type", "application/json");
+//Send the POST out
+            PrintWriter out = new PrintWriter(conn.getOutputStream());
+            out.print(stringCourseJson);
+            out.close();
+            Log.i("Status", String.valueOf(conn.getResponseCode()));
+            Log.i("json",stringCourseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+            return true;
+        }
+
     }
 
 }

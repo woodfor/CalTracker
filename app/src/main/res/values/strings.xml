@@ -17,7 +17,7 @@
     <string name="loa">"Level of Activity:"</string>
     <string name="dob">"Birthday"</string>
     <string name="height">"Height(m)"</string>
-    <string name="weight">"Weight(lbs)"</string>
+    <string name="weight">"Weight(kg)"</string>
     <string name="address">"Address"</string>
     <string name="SPM">"Steps per mile"</string>
     <string name="signUp">"Sign up"</string>

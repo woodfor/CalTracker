@@ -31,5 +31,7 @@ public interface DaliyInfoDAO {
     DaliyInfo findByID(int id);
     @Query("DELETE FROM DaliyInfo WHERE id = :id")
     void deleteOne(int id);
+    @Query("SELECT sum(steps) FROM DaliyInfo WHERE uid = :uid")
+    int totalSteps(int uid);
 
 }

@@ -43,7 +43,7 @@ public class StepFragment extends Fragment {
     EditText ed;
     private Context mContext;
     int infoID;
-
+    Context appContext;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         vDisplayUnit = inflater.inflate(R.layout.fragment_step, container, false);
@@ -52,7 +52,7 @@ public class StepFragment extends Fragment {
         final Button btn_add = vDisplayUnit.findViewById(R.id.button_add);
         user = getArguments().getParcelable("User");
         //init finished
-        db = Room.databaseBuilder(mContext,
+        db = Room.databaseBuilder(appContext,
                 DailyInfoDatabase.class, "dailyInfo_database")
                 .fallbackToDestructiveMigration()
                 .build();
@@ -268,6 +268,7 @@ public class StepFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        appContext = getActivity().getApplicationContext();
     }
 
     private void refreshFrg()

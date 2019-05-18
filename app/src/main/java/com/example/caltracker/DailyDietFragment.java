@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +65,7 @@ public class DailyDietFragment extends Fragment {
     TextView tv_sa;
     TextView tv_fat;
     ImageView foodImage;
-    ArrayList<Food> consumptions;
+    ArrayList<Consumption> consumptions;
     User user;
     private Context mContext;
     @Override
@@ -84,7 +85,7 @@ public class DailyDietFragment extends Fragment {
         spinner = vDisplayUnit.findViewById(R.id.spinnerCategory);
         foodList = vDisplayUnit.findViewById(R.id.listView_food);
         foodListArray = new ArrayList<HashMap<String, String>>();
-        consumptions = new ArrayList<Food>();
+        consumptions = new ArrayList<Consumption>();
 
         //init spinner
         PostAsyncTask task = new  PostAsyncTask();
@@ -109,7 +110,7 @@ public class DailyDietFragment extends Fragment {
                         }
                     }
                     myListAdapter = new
-                            SimpleAdapter(getContext(),foodListArray,R.layout.listview_food,colHEAD,dataCell);
+                            SimpleAdapter(mContext,foodListArray,R.layout.listview_food,colHEAD,dataCell);
                     foodList.setAdapter(myListAdapter);
 
                 }
@@ -158,29 +159,46 @@ public class DailyDietFragment extends Fragment {
                         showFood=i;
                     }
                 }
-                AlertDialog alertDialog = tools.alertDialog(getContext(),"Alert","Eat " + foodName +" ?");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "SURE!", new DialogInterface.OnClickListener() {
+                final EditText edt_quantity = new EditText(mContext);
+                edt_quantity.setInputType(InputType.TYPE_CLASS_NUMBER);
+                final AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+                        .setTitle("Alert")
+                        .setMessage("Eat " + foodName +"? Edit quantity below.")
+                        .setView(edt_quantity)
+                        .setPositiveButton("Ok",null)
+                        .setNegativeButton("No",null)
+                        .show();
+                Button btn_positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                btn_positive.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        consumptions.add(showFood);
+                    public void onClick(View v) {
+                        String tmp = edt_quantity.getText().toString().trim();
+                        if (!(tmp == null || tmp.isEmpty()))
+                        {
+                            int quantity;
+                            if((quantity = Integer.parseInt(edt_quantity.getText().toString())) !=0 ){
+                                Consumption consumption = new Consumption(showFood,user,quantity);
+                                consumptions.add(consumption);
+                                alertDialog.dismiss();
+                            }
+                            else
+                                edt_quantity.setError("the number should not be 0");
+                        }
+                        else
+                            edt_quantity.setError("please input a number");
                     }
                 });
-                alertDialog.show();
-                return false;
+
+                return true;
             }
         } );
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        final AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setTitle("Delete " + "displaying food ?");alertDialog.setMessage("Are you sure ?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                            if (RestClient.DeleteFood(showFood.getFid()) == true)
-                            {
-                                refreshFrg();
-                            }
-                            else
-                                Toast.makeText(mContext,"Server error",Toast.LENGTH_SHORT).show();
+                         new deleteFood().execute();
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
@@ -201,8 +219,8 @@ public class DailyDietFragment extends Fragment {
         bet_addFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText edittext = new EditText(getContext());
-                final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                final EditText edittext = new EditText(mContext);
+                final AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Food Name: ").setView(edittext)
                         .setPositiveButton("Ok",null)
                         .setNegativeButton("No",null)
@@ -260,7 +278,7 @@ public class DailyDietFragment extends Fragment {
                     if (!cateList.contains(i.getCategory()))
                         cateList.add(i.getCategory());
                 }
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, cateList);
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, cateList);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
 
@@ -279,8 +297,8 @@ public class DailyDietFragment extends Fragment {
         protected Bitmap doInBackground(String... foodNames) {
             String foodName = foodNames[0];
             String imageURL = "";
-            String[] params = {"imgColorType","imgSize","imgType","num","searchType"};
-            String[] values = {"color","small","photo","1","image"};
+            String[] params = {"imgColorType","imgType","num","searchType"};
+            String[] values = {"color","photo","1","image"};
             String result = SearchGoogleAPI.search(foodName,params,values);
             imageURL = SearchGoogleAPI.getImageUrl(result);
             Bitmap bimage = null;
@@ -332,7 +350,7 @@ public class DailyDietFragment extends Fragment {
                         e1.printStackTrace();
                     }
                 }
-                    final Dialog dialog = new Dialog(getContext());
+                    final Dialog dialog = new Dialog(mContext);
                     dialog.setContentView(R.layout.dialog_food_info);
                     dialog.setTitle("Food Fetched, Please add a category");
                     final TextView dtfn = dialog.findViewById(R.id.textViewdfn);
@@ -340,6 +358,8 @@ public class DailyDietFragment extends Fragment {
                     final TextView dtfat = dialog.findViewById(R.id.textViewdfat);
                     final TextView dtsa = dialog.findViewById(R.id.textViewdsa);
                     final EditText edt_d = dialog.findViewById(R.id.editTextCategory);
+                    final ImageView image = dialog.findViewById(R.id.imageViewdf);
+
                     String fn = "";
                     String cal = "";
                     String fat = "";
@@ -360,6 +380,7 @@ public class DailyDietFragment extends Fragment {
                         }
 
                     }
+                    new DownloadImageFromInternet(image).execute(fn);
                     dtfn.setText("Food Name: "+ fn);
                     dtcal.setText("Calorie: " + cal);
                     dtfat.setText("Fat: " + fat);
@@ -444,21 +465,51 @@ public class DailyDietFragment extends Fragment {
                 Toast.makeText(mContext,"backend error",Toast.LENGTH_SHORT).show();
         }
     }
+
+    private class deleteFood extends AsyncTask<Integer,Void,Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            return RestClient.DeleteFood(showFood.getFid());
+        }
+
+        @Override
+        protected void onPostExecute(Boolean flag) {
+            if (flag == true)
+            {
+                refreshFrg();
+            }
+            else
+                Toast.makeText(mContext,"Server error",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class addConsumption extends AsyncTask<Void,Void,Boolean>
     {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            ArrayList<Consumption> table = new ArrayList<>();
+            List<Consumption> foodDistinct = new ArrayList<>();
             if (!consumptions.isEmpty())
             {
-                Iterator<Food> iter = consumptions.iterator();
-                while (iter.hasNext())
+                Iterator<Consumption> iterator = consumptions.iterator();
+                boolean flag;
+                while (iterator.hasNext())
                 {
-                    Consumption consumption = new Consumption(iter.next(),user);
-                    table.add(consumption);
+                    flag = false;
+                    Consumption i = iterator.next();
+                    for (Consumption c : foodDistinct)
+                    {
+                        if (c.getFood().getName().equals(i.getFood().getName()))
+                        {
+                            c.setQuantity(c.getQuantity()+i.getQuantity());
+                            flag = true;
+                        }
+                    }
+                    if (!flag)
+                        foodDistinct.add(i);
                 }
-                return  RestClient.createConsumptions(table);
+                return  RestClient.createConsumptions(foodDistinct);
             }
            return false;
         }
@@ -467,6 +518,10 @@ public class DailyDietFragment extends Fragment {
             if (flag)
             {
                 tools.toast_long(mContext,"Your consumptions are added into backend database");
+            }
+            else
+            {
+                tools.toast_short(mContext,"Sever error");
             }
 
         }

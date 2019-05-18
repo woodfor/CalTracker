@@ -119,7 +119,7 @@ public class Activity_signUp extends AppCompatActivity {
         validation.addValidation(edt_dob,"^(?=\\s*\\S).*$","Birthday should not be empty");
         validation.addValidation(edt_postcode, "^(?=\\s*\\S).*$","Postcode should not be empty");
         validation.addValidation(edt_height, Range.closed(0.0f, 2.72f),"Height is empty or invalid");
-        validation.addValidation(edt_weight, Range.closed(0.0f, 600.00f),"Weight is empty or invalid, should be less than 600 lbs");
+        validation.addValidation(edt_weight, Range.closed(0.0f, 600.00f),"Weight is empty or invalid, should be less than 600 kg");
         validation.addValidation(edt_SPM, Range.closed(0, 10000),"Steps per mile is empty or invalid, should be less than 10000");
         validation.addValidation(edt_username, "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{4,}$","At least 1 number,letter and 4 length. white space is not allowed");
         validation.addValidation(edt_name, "[A-Z][a-z]*","First letter should be in UpperCase");
@@ -146,7 +146,7 @@ public class Activity_signUp extends AppCompatActivity {
                                     edt_surname.getText().toString(),
                                     edt_email.getText().toString(),
                                     new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ssZ").parse(edt_dob.getText().toString()+"T00:00:00+10:00"),
-                                    new BigDecimal(edt_height.getText().toString()),
+                                    new BigDecimal(edt_height.getText().toString()).movePointRight(2),
                                     new BigDecimal(edt_weight.getText().toString()),
                                     male.isChecked() ? 'M' : 'F',
                                     edt_address.getText().toString(),
