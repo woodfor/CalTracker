@@ -96,7 +96,7 @@
         android:hint="@string/address"
         android:inputType="textPostalAddress"
         android:singleLine="false"
-        android:text="abc" />
+        android:text="25 Hay Point Road SOUTH MACKAY Queensland " />
 
     <EditText
         android:id="@+id/editText_postcode"
@@ -105,7 +105,7 @@
         android:ems="10"
         android:hint="@string/postcode"
         android:inputType="textPersonName"
-        android:text="bc" />
+        android:text="4740" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -143,7 +143,7 @@
         android:ems="10"
         android:hint="@string/weight"
         android:inputType="numberDecimal"
-        tools:text="200" />
+        tools:text="200.0" />
 
     <EditText
         android:id="@+id/editTextSPM"

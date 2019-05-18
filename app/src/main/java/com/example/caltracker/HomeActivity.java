@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity
     private AlarmManager alarmMgr;
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
+    private Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         //Service and alarm
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmIntent = new Intent(this, ScheduledIntentService.class);
@@ -150,16 +151,20 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_display_tracker) {
             nextFragment = dailyTrackerFragment;
         } else if (id == R.id.nav_display_logout) {
-
+            Intent intent = new Intent(this, LoginActivity.class);
+            startService(intent);
+            finish();
         }  else if (id == R.id.nav_dailyDiet){
             nextFragment = dailyDietFragment;
         }  else if (id == R.id.nav_display_report){
             nextFragment = reportFragment;
         }  else if (id == R.id.nav_display_map){
-            nextFragment = mapFragment;
+            Intent intent = new Intent(this,MapsActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
 
-        if (id != R.id.nav_display_logout)
+        if (id != R.id.nav_display_logout && id != R.id.nav_display_map)
         {
             String tag = nextFragment.getClass().getName();
             FragmentManager fm = getSupportFragmentManager();
@@ -168,12 +173,7 @@ public class HomeActivity extends AppCompatActivity
             DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
-        else
-        {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startService(intent);
-            finish();
-        }
+
         return true;
     }
 
