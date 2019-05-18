@@ -121,9 +121,9 @@ public class Activity_signUp extends AppCompatActivity {
         validation.addValidation(edt_height, Range.closed(0.0f, 2.72f),"Height is empty or invalid");
         validation.addValidation(edt_weight, Range.closed(0.0f, 600.00f),"Weight is empty or invalid, should be less than 600 kg");
         validation.addValidation(edt_SPM, Range.closed(0, 10000),"Steps per mile is empty or invalid, should be less than 10000");
-        validation.addValidation(edt_username, "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{4,}$","At least 1 number,letter and 4 length. white space is not allowed");
+        validation.addValidation(edt_username, "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{4,}$","At least 1 number,upper letter, lower letter and 4 length. white space is not allowed");
         validation.addValidation(edt_name, "[A-Z][a-z]*","First letter should be in UpperCase");
-        validation.addValidation(edt_surname,  "[A-Z]+([ '-][a-zA-Z]+)*","First letter should be in UpperCase");
+        validation.addValidation(edt_surname,  "[A-Z]+([a-zA-Z]+)*","First letter should be in UpperCase and no odd character");
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

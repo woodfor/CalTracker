@@ -35,7 +35,7 @@
         android:ems="10"
         android:hint="@string/surname"
         android:inputType="textPersonName"
-        android:text="T-uck" />
+        android:text="Tuck" />
 
     <EditText
         android:id="@+id/editTextPasswd"

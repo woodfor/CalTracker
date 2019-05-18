@@ -60,13 +60,6 @@
         android:layout_height="10dp"
         />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Eat carefully! you can't deny your past"
-        android:textAlignment="center" />
-
     <Space
         android:layout_width="match_parent"
         android:layout_height="10dp"

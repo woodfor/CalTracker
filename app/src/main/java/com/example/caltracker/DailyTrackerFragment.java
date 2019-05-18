@@ -179,7 +179,10 @@ public class DailyTrackerFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Integer steps) {
-            tv_steps.setText("Your daily steps: " + steps);
+            if (steps !=0)
+                tv_steps.setText("Your daily steps: " + steps);
+            else
+                tv_steps.setText("Add entry in step screen");
         }
     }
 
@@ -190,12 +193,17 @@ public class DailyTrackerFragment extends Fragment {
             int basicBurned = RestClient.getBasicDailyCalorieBurned(user.getUid());
             double calPerStep = RestClient.getCalPerStep(user.getUid());
             int steps = db.InfoDao().totalSteps(user.getUid());
+            if (steps == 0)
+                return new Long(0);
             return Math.round(calPerStep * steps + basicBurned);
         }
 
         @Override
         protected void onPostExecute(Long number) {
-            tv_burned.setText("Your daily calorie burned:  " +  number + "cal");
+            if (number != 0)
+                tv_burned.setText("Your daily calorie burned:  " +  number + "cal");
+            else
+                tv_burned.setText("");
         }
     }
 
