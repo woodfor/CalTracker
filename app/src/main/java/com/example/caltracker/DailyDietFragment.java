@@ -141,7 +141,7 @@ public class DailyDietFragment extends Fragment {
                 tv_fn.setText("Food Name: " + showFood.getName());
                 tv_fat.setText("Fat: " + showFood.getFat()+"g");
                 tv_sa.setText("Per "+ showFood.getServingamount()+ showFood.getServingunit());
-                btn_deleteFood.setVisibility(View.VISIBLE);
+                //btn_deleteFood.setVisibility(View.VISIBLE);
                 //new FatSecretAsyncTask().execute(foodName);
             }
         });
