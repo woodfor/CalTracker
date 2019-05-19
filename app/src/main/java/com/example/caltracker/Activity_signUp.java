@@ -1,8 +1,11 @@
 package com.example.caltracker;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.StrictMode;
@@ -27,6 +30,7 @@ import com.example.caltracker.ui.login.LoginActivity;
 import com.google.common.collect.Range;
 import com.google.common.hash.Hashing;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -45,6 +49,7 @@ public class Activity_signUp extends AppCompatActivity {
 
     final Calendar myCalendar = Calendar.getInstance();
     Boolean flag = false;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +67,7 @@ public class Activity_signUp extends AppCompatActivity {
         final EditText edt_surname = findViewById(R.id.editTextUserSurname);
         final EditText edt_name = findViewById(R.id.editTextRealName);
         final RadioButton male = findViewById(R.id.radioButtonM);
-
+        context =this;
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -138,6 +143,12 @@ public class Activity_signUp extends AppCompatActivity {
                             return !userExist(s);
                         }
                     },"Username exists");
+                    nameExist.addValidation(edt_address, new SimpleCustomValidation() {
+                        @Override
+                        public boolean compare(String s) {
+                            return addressExists(edt_address);
+                        }
+                    },"Can not find this address on map");
                     if (nameExist.validate())
                     {
                         PostAsyncTask postAsyncTask=new PostAsyncTask();
@@ -230,6 +241,26 @@ public class Activity_signUp extends AppCompatActivity {
         }
     }
 
+
+    private boolean addressExists(EditText editText)
+    {
+        Geocoder gc = new Geocoder(context);
+        List<Address> list = null;
+        if (gc.isPresent()) {
+            try {
+                list = gc.getFromLocationName(editText.getText().toString(), 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (list.isEmpty()) {
+                return false;
+
+            }
+            else
+                return true;
+        }
+        return false;
+    }
 
 
 
