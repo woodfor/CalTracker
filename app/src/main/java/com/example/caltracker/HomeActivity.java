@@ -35,7 +35,6 @@ public class HomeActivity extends AppCompatActivity
     DailyDietFragment dailyDietFragment;
     DailyTrackerFragment dailyTrackerFragment;
     ReportFragment reportFragment;
-    MapFragment mapFragment;
     private AlarmManager alarmMgr;
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
@@ -79,8 +78,6 @@ public class HomeActivity extends AppCompatActivity
         dailyTrackerFragment.setArguments(bundle);
         reportFragment = new ReportFragment();
         reportFragment.setArguments(bundle);
-        mapFragment = new MapFragment();
-        mapFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment).commit();
         View headerView = navigationView.getHeaderView(0);
