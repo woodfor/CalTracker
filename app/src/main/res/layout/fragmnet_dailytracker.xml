@@ -86,6 +86,12 @@
         android:textAlignment="center" />
 
     <TextView
+        android:id="@+id/textViewBasicBurned"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center" />
+
+    <TextView
         android:id="@+id/textViewdtCalBurned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -56,6 +56,7 @@ public class DailyTrackerFragment extends Fragment {
     TextView tv_burned;
     TextView tv_steps;
     Context appContext;
+    TextView tv_basicBurned;
     DailyInfoDatabase db = null;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
@@ -69,6 +70,7 @@ public class DailyTrackerFragment extends Fragment {
         tv_steps = vDisplayUnit.findViewById(R.id.textViewdtSteps);
         tv_burned = vDisplayUnit.findViewById(R.id.textViewdtCalBurned);
         tv_consume = vDisplayUnit.findViewById(R.id.textViewdtCalConsume);
+        tv_basicBurned = vDisplayUnit.findViewById(R.id.textViewBasicBurned);
         Button btn_small = vDisplayUnit.findViewById(R.id.buttonSmall);
         db = Room.databaseBuilder(appContext,
                 DailyInfoDatabase.class, "dailyInfo_database")
@@ -101,7 +103,7 @@ public class DailyTrackerFragment extends Fragment {
                 Intent intent = new Intent(appContext, ScheduledIntentService.class);
                 intent.putExtras(getArguments());
                 appContext.startService(intent);
-                refreshFrg();
+                //refreshFrg();
             }
         });
         return vDisplayUnit;
@@ -143,7 +145,6 @@ public class DailyTrackerFragment extends Fragment {
         protected String doInBackground(Void... voids) {
             String goal = "";
             try{
-
                 FileInputStream fileInputStream= appContext.openFileInput(user.getUid().toString());
                 if (fileInputStream!=null){
                     BufferedReader bufferedReader= new BufferedReader(new
@@ -161,7 +162,7 @@ public class DailyTrackerFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(String goal) {
-            if (!goal.isEmpty())
+            if (!goal.trim().isEmpty())
                 tv_goal.setText("Your daily goal: " + goal+"cal");
             else
                 tv_goal.setText("");
@@ -186,24 +187,22 @@ public class DailyTrackerFragment extends Fragment {
         }
     }
 
-    private class readBasicCalBurned extends AsyncTask<Void, Void,Long>{
+    private class readBasicCalBurned extends AsyncTask<Void, Void,Long[]>{
 
         @Override
-        protected Long doInBackground(Void... voids) {
+        protected Long[] doInBackground(Void... voids) {
             int basicBurned = RestClient.getBasicDailyCalorieBurned(user.getUid());
             double calPerStep = RestClient.getCalPerStep(user.getUid());
             int steps = db.InfoDao().totalSteps(user.getUid());
-            if (steps == 0)
-                return new Long(0);
-            return Math.round(calPerStep * steps + basicBurned);
+            Long[] tmp = {new Long(basicBurned),Math.round(calPerStep * steps)};
+            return tmp;
         }
 
         @Override
-        protected void onPostExecute(Long number) {
-            if (number != 0)
-                tv_burned.setText("Your daily calorie burned:  " +  number + "cal");
-            else
-                tv_burned.setText("");
+        protected void onPostExecute(Long[] number) {
+            if (number[1] != 0)
+                tv_burned.setText("Your running burned:  " +  number[1] + "cal");
+            tv_basicBurned.setText("Your basic burned: "+ number[0] + "cal");
         }
     }
 

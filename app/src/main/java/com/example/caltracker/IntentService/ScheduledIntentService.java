@@ -42,7 +42,7 @@ public class ScheduledIntentService extends IntentService {
         int basicBurned = RestClient.getBasicDailyCalorieBurned(user.getUid());
         double calPerStep = RestClient.getCalPerStep(user.getUid());
         int consumed =  RestClient.getDailyCalorieConsumed(user.getUid());
-        if (!(basicBurned==-1 || calPerStep ==-1||consumed==-1))
+        if (!(basicBurned==-1 || calPerStep ==-1))
         {
             Long burned = Math.round(calPerStep * steps + basicBurned);
             String goal="";
@@ -62,6 +62,9 @@ public class ScheduledIntentService extends IntentService {
             }
             Report report = new Report(new Date(),consumed == -1 ? 0 : consumed,burned.intValue(),steps, goal.trim().isEmpty() ? 0 : Integer.parseInt(goal),user);
             RestClient.createReport(report);
+        }
+        else {
+            Log.i(new SimpleDateFormat("yyyy-MM-dd").format(new Date()),"Sever error can not update");
         }
 
         try{

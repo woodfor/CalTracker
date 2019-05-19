@@ -429,7 +429,7 @@ public class RestClient {
             while (inStream.hasNextLine()) {
                 textResult += inStream.nextLine();
             }
-            if (!(conn.getResponseCode() != 200 || textResult.trim().equals(null)))
+            if (!(conn.getResponseCode() != 200 || textResult.trim().equals("[]")))
             {
                 calorie =  Integer.parseInt(textResult.trim());
             }
@@ -600,7 +600,7 @@ public class RestClient {
                 if (basicBurned != -1)
                 {
                     map.put("Basic burned",basicBurned);
-                    map.put("Other burned", totalBurned-basicBurned);;
+                    map.put("Other burned", totalBurned-basicBurned);
                     map.put("Remained",(tmp=(remained - basicBurned))<0 ? 0:tmp);
                 }
                 else
